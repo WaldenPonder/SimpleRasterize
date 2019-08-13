@@ -2,6 +2,7 @@
 #include <QPainter>
 #include <QImage>
 
+//画一个透视旋转三角形
 Render::Render(QWidget *parent) :
     QWidget(parent)
 {
