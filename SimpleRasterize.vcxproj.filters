@@ -30,26 +30,23 @@
       <Extensions>*</Extensions>
       <ParseFiles>false</ParseFiles>
     </Filter>
-    <Filter Include="Distribution Files">
+    <Filter Include="inc">
       <UniqueIdentifier>{B83CAF91-C7BF-462F-B76C-EA11631F866C}</UniqueIdentifier>
       <Extensions>*</Extensions>
       <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="osg">
+      <UniqueIdentifier>{948da74c-6315-487e-b04a-63e49edb7fac}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MathUtil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Matrix.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MeshObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Object.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Quat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
@@ -61,30 +58,21 @@
     <ClCompile Include="tiny_obj_loader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Matrix.cpp">
+      <Filter>osg</Filter>
+    </ClCompile>
+    <ClCompile Include="Quat.cpp">
+      <Filter>osg</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MathUtil.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Matrix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MeshObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Object.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Quat.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Vec2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Vec3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Vec4.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="context.h">
@@ -96,6 +84,21 @@
     <ClInclude Include="tiny_obj_loader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Vec2.h">
+      <Filter>osg</Filter>
+    </ClInclude>
+    <ClInclude Include="Vec3.h">
+      <Filter>osg</Filter>
+    </ClInclude>
+    <ClInclude Include="Vec4.h">
+      <Filter>osg</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix.h">
+      <Filter>osg</Filter>
+    </ClInclude>
+    <ClInclude Include="Quat.h">
+      <Filter>osg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="debug\moc_predefs.h.cbt">
@@ -104,12 +107,10 @@
     <CustomBuild Include="release\moc_predefs.h.cbt">
       <Filter>Generated Files</Filter>
     </CustomBuild>
-    
-    
   </ItemGroup>
   <ItemGroup>
     <None Include="common.inc">
-      <Filter>Distribution Files</Filter>
+      <Filter>inc</Filter>
     </None>
   </ItemGroup>
 </Project>
