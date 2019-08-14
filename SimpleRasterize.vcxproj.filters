@@ -52,9 +52,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="render.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="tiny_obj_loader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -63,6 +60,9 @@
     </ClCompile>
     <ClCompile Include="Quat.cpp">
       <Filter>osg</Filter>
+    </ClCompile>
+    <ClCompile Include="Render.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -78,9 +78,6 @@
     <ClInclude Include="context.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <QtMoc Include="render.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <ClInclude Include="tiny_obj_loader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -112,5 +109,10 @@
     <None Include="common.inc">
       <Filter>inc</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="Render.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
 </Project>

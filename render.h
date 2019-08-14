@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QPaintEvent>
+#include <QResizeEvent>
 #include <QDebug>
 
 class Render : public QWidget
@@ -13,7 +14,8 @@ public:
     explicit Render(QWidget *parent = 0);
     ~Render();
 
-     void paintEvent(QPaintEvent*) override;
+     virtual void paintEvent(QPaintEvent*) override;
+	 virtual void resizeEvent(QResizeEvent *event);
 
 private:
 
