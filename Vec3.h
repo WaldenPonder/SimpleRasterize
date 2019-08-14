@@ -38,7 +38,7 @@ class Vec3
         Vec3(value_type x,value_type y,value_type z) { _v[0]=x; _v[1]=y; _v[2]=z; }
 		explicit Vec3(value_type v) { _v[0] = v; _v[1] = v; _v[2] = v; }
 
-        Vec3(const Point2D& v2,value_type zz)
+        Vec3(const Vec2& v2,value_type zz)
         {
             _v[0] = v2[0];
             _v[1] = v2[1];

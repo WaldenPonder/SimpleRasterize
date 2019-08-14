@@ -23,15 +23,16 @@ class MeshObject : public Object, public InstancePool<MeshObject>
     __class__(MeshObject)
 	MeshObject(const Mesh& mesh);
 	virtual ~MeshObject();
-
-    inline void vert_shader(Vec3& v);
-    inline void frag_shader();
-
+	   
     void draw();
 
 	Matrix matrix_;
 
  private:
+	 inline void vert_shader(Vec4& v) const;
+	 inline void frag_shader();
+	 inline void transform2screen(Vec4& v) const;
+
 	struct Impl;
 	Impl* impl;
 };

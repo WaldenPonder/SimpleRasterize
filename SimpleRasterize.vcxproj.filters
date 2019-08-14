@@ -25,11 +25,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Distribution Files">
-      <UniqueIdentifier>{B83CAF91-C7BF-462F-B76C-EA11631F866C}</UniqueIdentifier>
-      <Extensions>*</Extensions>
-      <ParseFiles>false</ParseFiles>
-    </Filter>
     <Filter Include="inc">
       <UniqueIdentifier>{B83CAF91-C7BF-462F-B76C-EA11631F866C}</UniqueIdentifier>
       <Extensions>*</Extensions>
@@ -64,6 +59,9 @@
     <ClCompile Include="Render.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Util.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MathUtil.h">
@@ -95,6 +93,9 @@
     </ClInclude>
     <ClInclude Include="Quat.h">
       <Filter>osg</Filter>
+    </ClInclude>
+    <ClInclude Include="Util.h">
+      <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
