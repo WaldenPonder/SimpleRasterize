@@ -1,6 +1,6 @@
 #pragma once
 #include "Matrix.h"
-#include "Vec3.h"
+#include "Object.h"
 
 class Mesh
 {
@@ -17,12 +17,15 @@ class Mesh
 	friend class MeshObject;
 };
 
-class MeshObject : public Shape
+class MeshObject : public Object, public InstancePool<MeshObject>
 {
  public:
     __class__(MeshObject)
 	MeshObject(const Mesh& mesh);
 	virtual ~MeshObject();
+
+    inline void vert_shader(Vec3& v);
+    inline void frag_shader();
 
     void draw();
 

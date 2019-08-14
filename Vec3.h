@@ -76,6 +76,8 @@ class Vec3
             _v[0]=rhs._v[0]; _v[1]=rhs._v[1]; _v[2]=rhs._v[2];
         }
 
+        inline int to_color() const { return (0xffu << 24) | (((int)_v[0] & 0xffu) << 16) | (((int)_v[1] & 0xffu) << 8) | ((int)_v[2] & 0xffu); }
+
         inline value_type& operator [] (int i) { return _v[i]; }
         inline value_type operator [] (int i) const { return _v[i]; }
 

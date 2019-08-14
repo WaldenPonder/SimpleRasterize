@@ -1,5 +1,6 @@
 #include "MeshObject.h"
 #include "tiny_obj_loader.h"
+#include "context.h"
 
 struct Mesh::Impl
 {
@@ -45,11 +46,21 @@ void Mesh::load()
 
 MeshObject::MeshObject(const Mesh& mesh) : impl(new Impl(mesh))
 {
-	impl->extent_.mesh_ = this;
+
 }
 
 MeshObject::~MeshObject()
 {
+}
+
+void MeshObject::vert_shader(Vec3 &v)
+{
+    v = v * g::context.viewMatrix_ * g::context.projectionMatrix_;
+}
+
+void MeshObject::frag_shader()
+{
+
 }
 
 //https://blog.csdn.net/xiaobaitu389/article/details/75523018
@@ -68,11 +79,13 @@ void MeshObject::draw()
 		for (int i = 0; i < index.size(); i += 3)
 		{
 			int   in = index[i].vertex_index;
-			Point p1(vertices[in * 3], vertices[in * 3 + 1], vertices[in * 3 + 2]);
+            Vec3 p1(vertices[in * 3], vertices[in * 3 + 1], vertices[in * 3 + 2]);
 			in = index[i + 1].vertex_index;
-			Point p2(vertices[in * 3], vertices[in * 3 + 1], vertices[in * 3 + 2]);
+            Vec3 p2(vertices[in * 3], vertices[in * 3 + 1], vertices[in * 3 + 2]);
 			in = index[i + 2].vertex_index;
-			Point p3(vertices[in * 3], vertices[in * 3 + 1], vertices[in * 3 + 2]);
+            Vec3 p3(vertices[in * 3], vertices[in * 3 + 1], vertices[in * 3 + 2]);
+
+            vert_shader(p1),  vert_shader(p2), vert_shader(p3);
 
 			Vec3 n1, n2, n3;
 			if (normals.size())

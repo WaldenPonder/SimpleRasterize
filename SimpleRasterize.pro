@@ -43,7 +43,8 @@ HEADERS += \
     Object.h \
     Quat.h \
     MeshObject.h \
-    tiny_obj_loader.h
+    tiny_obj_loader.h \
+    context.h
 
 FORMS +=
 
