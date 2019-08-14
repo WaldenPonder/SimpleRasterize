@@ -222,7 +222,7 @@
   <ImportGroup Label="ExtensionTargets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties Qt5Version_x0020_x64="Qt5.9.3" />
+      <UserProperties Qt5Version_x0020_x64="qt_5_10_1" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>
