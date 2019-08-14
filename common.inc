@@ -164,15 +164,7 @@ static  std::string class_name() { return #CLASS; }/*¿‡–Õ*/\
 virtual std::string  className(){  return #CLASS; }\
 virtual std::string  className() const { return #CLASS; }
 
-class Shape;
-class World;
-class Material;
-class ShadeInfo;
-class Ray;
-class Extent;
 class MeshObject;
-class Acceleration;
-
 
 template<typename T>
 vector<T>& operator <<(vector<T>& v, const T& i)

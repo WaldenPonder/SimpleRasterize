@@ -29,7 +29,9 @@ SOURCES += \
     Matrix.cpp \
     MathUtil.cpp \
     Object.cpp \
-    Quat.cpp
+    Quat.cpp \
+    MeshObject.cpp \
+    tiny_obj_loader.cpp
 
 HEADERS += \
         render.h \
@@ -39,7 +41,9 @@ HEADERS += \
     Vec4.h \
     MathUtil.h \
     Object.h \
-    Quat.h
+    Quat.h \
+    MeshObject.h \
+    tiny_obj_loader.h
 
 FORMS +=
 

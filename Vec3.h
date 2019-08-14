@@ -20,7 +20,6 @@
 #include <algorithm>
 #include <iostream>
 #include <vector>
-#include "Object.h"
 
 class Vec3
 {
@@ -240,5 +239,11 @@ inline Vec3 operator*(float f, const Vec3& v)
 }
 
 #include "common.inc"
+
+
+using IntArray = vector<int>;
+using FloatArray = vector<float>;
+using DoubleArray = vector<double>;
+using Vec3Array = vector<Vec3>;
 
 #endif
