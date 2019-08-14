@@ -33,7 +33,7 @@ void Render::paintEvent(QPaintEvent *)
     for (int x = 0; x < width(); ++x) {
         for (int y = 0; y < height(); ++y) {
 
-            Vec3 c = g::context.colorBuffer_[x][y];
+            Vec3 c = g::context.colorBuffer_[y][x];
             pixels[ x * height() + y] = c.to_color();
         }
     }
