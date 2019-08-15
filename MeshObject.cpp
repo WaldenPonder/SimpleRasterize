@@ -95,6 +95,8 @@ void MeshObject::transform2screen(Vec4& v) const
 
 void MeshObject::draw()
 {
+	matrix_ = Matrix::rotate(.05, Y_AXIS) * matrix_;
+
 	float		t, u, v;
 	const Mesh& mesh = impl->mesh_;
 

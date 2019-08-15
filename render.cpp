@@ -12,15 +12,18 @@ struct Render::Impl
 {
 	clock_t		pre = 0;
 	QLabel* lable;
+	QTimer timer;
 };
 
-//画一个透视旋转三角形
 Render::Render(QWidget* parent) : QWidget(parent), impl(new Impl)
 {
 	impl->lable = new QLabel(this);
 	impl->lable->setPalette(QPalette(Qt::red));
 	impl->lable->setGeometry(20, 20, 60, 30);
 	impl->lable->setStyleSheet("color:red;");
+
+	connect(&impl->timer, SIGNAL(timeout()), this, SLOT(update()));
+	impl->timer.start(10);
 }
 
 Render::~Render()
