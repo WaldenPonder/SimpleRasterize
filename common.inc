@@ -186,13 +186,16 @@ vector<T*>& operator <<(vector<T*>& v, nullptr_t i)
 }
 
 
-inline  std::ostream& operator<< (std::ostream& stm, const Vec3& v)
-{
-	stm << std::string("  [") << v[0] << " , " << v[1] << " , " << v[2] << "] ";
+//inline  std::ostream& operator<< (std::ostream& stm, const Vec3& v)
+//{
+//	stm << std::string("  [") << v[0] << " , " << v[1] << " , " << v[2] << "] ";
+//
+//	return stm;
+//}
 
-	return stm;
-}
-
+#define VEC2(v)  v[0] << ", " << v[1]
+#define VEC3(v)  v[0] << ", " << v[1] << ", " << v[2]
+#define VEC4(v)  v[0] << ", " << v[1] << ", " << v[2] << ", " << v[3]
 
 template<typename T>
 class InstancePool

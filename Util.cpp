@@ -41,6 +41,6 @@ namespace g {
 		string s = getExeDir() + "res/";
 		if (!_access(s.c_str(), 0))
 			return s;
-		return getExeDir() + "../../res/";
+		return getExeDir() + "../res/";
 	}
 }

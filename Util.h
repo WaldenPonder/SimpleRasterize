@@ -8,5 +8,6 @@ namespace g
 	//尾部带 "\\"
 	string getExeDir();
 
+	//尾部带"/"
 	string getResDir();
 }

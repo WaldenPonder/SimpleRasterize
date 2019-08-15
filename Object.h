@@ -1,6 +1,6 @@
 #pragma once
 #include "Matrix.h"
-
+#include <QDebug>
 
 class Object
 {

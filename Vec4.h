@@ -261,6 +261,13 @@ inline Vec4 componentDivide(const Vec4& lhs, const Vec4& rhs)
 {
     return Vec4(lhs[0]/rhs[0], lhs[1]/rhs[1], lhs[2]/rhs[2], lhs[3]/rhs[3]);
 }
+//
+//inline  std::ostream& operator<< (std::ostream& stm, const Vec4& v)
+//{
+//	stm << std::string("  [") << v[0] << " , " << v[1] << " , " << v[2] << ", " << v[3] << "] ";
+//
+//	return stm;
+//}
 
 #endif
 
