@@ -11,6 +11,7 @@ namespace g
 
 int main(int argc, char* argv[])
 {
+	//-------------------------scene------------------------
 	//Mesh cube(g::getResDir() + "cube.obj");
 	//MeshObject mo(cube);
 	//mo.matrix_ = Matrix::translate(-.5, -.5, -5);
