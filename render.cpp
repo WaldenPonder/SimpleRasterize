@@ -1,52 +1,71 @@
 #include "render.h"
 #include <QPainter>
 #include <QImage>
+#include <QLabel>
+#include <QTimer>
 #include "MeshObject.h"
 #include "context.h"
 #include "Util.h"
+#include "QDateTime"
 
-Mesh cube(g::getResDir() + "cube.obj");
-MeshObject mo(cube);
+struct Render::Impl
+{
+	clock_t		pre = 0;
+	QLabel* lable;
+};
 
 //画一个透视旋转三角形
-Render::Render(QWidget *parent) :
-    QWidget(parent)
+Render::Render(QWidget* parent) : QWidget(parent), impl(new Impl)
 {
-	mo.matrix_ = Matrix::translate(-.5, 0, -10);
+	impl->lable = new QLabel(this);
+	impl->lable->setPalette(QPalette(Qt::red));
+	impl->lable->setGeometry(20, 20, 60, 30);
+	impl->lable->setStyleSheet("color:red;");
 }
 
 Render::~Render()
 {
-
+	delete impl;
 }
 
-void Render::paintEvent(QPaintEvent *)
+void Render::paintEvent(QPaintEvent*)
 {
-    for(MeshObject* mo : MeshObject::pool())
-        mo->draw();
+	//--------------------prepare-----------------------------
+	float t = clock() - impl->pre;
+	impl->lable->setText(QString::number(1000.0 / t, 'f', 2) + " FPS");
+	impl->pre = clock();
 
-    QRgb* pixels = new QRgb[width()*height()];
-    for (int x = 0; x < width(); ++x) {
-        for (int y = 0; y < height(); ++y) {
-              pixels[ x * height() + y] = g::context.clearColor_.to_color();
-        }
-    }
+	QRgb* pixels = new QRgb[width() * height()];
+	for (int x = 0; x < width(); ++x)
+	{
+		for (int y = 0; y < height(); ++y)
+		{
+			g::context.colorBuffer_[y][x] = g::context.clearColor_;
+		}
+	}
 
-    QPainter painter(this);
-    QImage image((uchar*)pixels, width(), height(), QImage::Format_ARGB32);
-    for (int x = 0; x < width(); ++x) {
-        for (int y = 0; y < height(); ++y) {
+	//--------------------draw-----------------------------
+	for (MeshObject* mo : MeshObject::pool())
+		mo->draw();
 
-            Vec3 c = g::context.colorBuffer_[y][x] * 255;
-            pixels[ x * height() + y] = c.to_color();
-        }
-    }
-    painter.drawImage(0, 0, image);
+	//-------------------------------------------------
+	QPainter painter(this);
+	QImage   image(( uchar* )pixels, width(), height(), QImage::Format_ARGB32);
+	for (int x = 0; x < width(); ++x)
+	{
+		for (int y = 0; y < height(); ++y)
+		{
 
-    delete[] pixels;
+			Vec3 c					 = g::context.colorBuffer_[y][x] * 255;
+			pixels[x * height() + y] = c.to_color();
+		}
+	}
+	painter.drawImage(0, 0, image);
+
+	delete[] pixels;
 }
 
-void Render::resizeEvent(QResizeEvent *event)
+void Render::resizeEvent(QResizeEvent* event)
 {
 	g::context.width_ = event->size().width(), g::context.height_ = event->size().height();
 	const float width = g::context.width_, height = g::context.height_;

@@ -3,17 +3,17 @@
 #include "context.h"
 #include "Vec4.h"
 
-float min3(const float &a, const float &b, const float &c)
+float min3(const float& a, const float& b, const float& c)
 {
 	return std::min(a, std::min(b, c));
 }
 
-float max3(const float &a, const float &b, const float &c)
+float max3(const float& a, const float& b, const float& c)
 {
 	return std::max(a, std::max(b, c));
 }
 
-float edgeFunction(const Vec4 &a, const Vec4 &b, const Vec4 &c)
+float edgeFunction(const Vec4& a, const Vec4& b, const Vec4& c)
 {
 	return (c[0] - a[0]) * (b[1] - a[1]) - (c[1] - a[1]) * (b[0] - a[0]);
 }
@@ -62,35 +62,33 @@ void Mesh::load()
 
 MeshObject::MeshObject(const Mesh& mesh) : impl(new Impl(mesh))
 {
-
 }
 
 MeshObject::~MeshObject()
 {
 }
 
-void MeshObject::vert_shader(Vec4 &v) const
+void MeshObject::vert_shader(Vec4& v) const
 {
 	//qDebug() << "AA " << VEC4(v) << endl;
-	v = v * g::context.viewMatrix_ * g::context.projectionMatrix_;
+	v = v * matrix_ * g::context.viewMatrix_ * g::context.projectionMatrix_;
 	//qDebug() << "BB " << VEC4(v) << endl;
 }
 
 void MeshObject::frag_shader()
 {
-
 }
 
 void MeshObject::transform2screen(Vec4& v) const
 {
-	//v /= -v.z();
-	qDebug() << "#VV " << VEC4(v) << endl;
+	v /= v.w();
+	//qDebug() << "#VV " << VEC4(v);
 
 	v.x() = (v.x() + 1) * .5 * g::context.width_;
 	v.y() = (v.y() + 1) * .5 * g::context.height_;
 	v.z() = -v.z();
 
-	qDebug() << "VV " << VEC4(v) << endl;
+	//qDebug() << "VV " << VEC4(v);
 }
 
 //https://blog.csdn.net/xiaobaitu389/article/details/75523018
@@ -108,17 +106,17 @@ void MeshObject::draw()
 
 		for (int i = 0; i < index.size(); i += 3)
 		{
-			int   in = 3 * index[i].vertex_index;
-            
+			int in = 3 * index[i].vertex_index;
+
 			Vec4 p1(vertices[in], vertices[in + 1], vertices[in + 2], 1);
 			in = 3 * index[i + 1].vertex_index;
-            Vec4 p2(vertices[in], vertices[in + 1], vertices[in + 2], 1);
+			Vec4 p2(vertices[in], vertices[in + 1], vertices[in + 2], 1);
 			in = 3 * index[i + 2].vertex_index;
-            Vec4 p3(vertices[in], vertices[in + 1], vertices[in + 2], 1);
+			Vec4 p3(vertices[in], vertices[in + 1], vertices[in + 2], 1);
 
-            vert_shader(p1),  vert_shader(p2), vert_shader(p3);
+			vert_shader(p1), vert_shader(p2), vert_shader(p3);
 			transform2screen(p1), transform2screen(p2), transform2screen(p3);
-			
+
 			int minx = min3(p1.x(), p2.x(), p3.x());
 			int maxx = max3(p1.x(), p2.x(), p3.x());
 			int miny = min3(p1.y(), p2.y(), p3.y());
@@ -144,14 +142,14 @@ void MeshObject::draw()
 
 						float z = 1 / oneOverZ;
 
-						if (z < g::context.depthBuffer_[y][x])
+						//if (z < g::context.depthBuffer_[y][x])
 						{
 							g::context.colorBuffer_[y][x] = g::Red;
 						}
 					}
 				}
 			}
-					   
+
 			//Vec3 n1, n2, n3;
 			//if (normals.size())
 			//{
@@ -162,7 +160,6 @@ void MeshObject::draw()
 			//	in = index[i + 2].normal_index;
 			//	n3 = Vec3(normals[in * 3], normals[in * 3 + 1], normals[in * 3 + 2]);
 			//}
-		
 		}
 	}
 }

@@ -1,8 +1,8 @@
 
 
-const Vec3 X_AXIS(1.0, 0.0, 0.0);
-const Vec3 Y_AXIS(0.0, 1.0, 0.0);
-const Vec3 Z_AXIS(0.0, 0.0, 1.0);
+#define X_AXIS Vec3(1.0, 0.0, 0.0)
+#define Y_AXIS  Vec3(0.0, 1.0, 0.0)
+#define Z_AXIS Vec3(0.0, 0.0, 1.0)
 
 using Vec3f = Vec3;
 

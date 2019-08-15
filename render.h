@@ -18,7 +18,8 @@ public:
 	 virtual void resizeEvent(QResizeEvent *event);
 
 private:
-
+	struct Impl;
+	Impl* impl;
 };
 
 #endif // RENDER_H
