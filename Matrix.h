@@ -109,6 +109,8 @@ class  Matrix
                          value_type angle3, const Vec3& axis3);
 
 
+		bool transpose(const Matrix &mat);
+
         /** decompose the matrix into translation, rotation, scale and scale orientation.*/
         void decompose( Vec3& translation,
                         Quat& rotation,

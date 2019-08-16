@@ -1,8 +1,9 @@
 #pragma once
 #include "Matrix.h"
 #include <QDebug>
+#include <QObject>
 
-class Object
+class Object : public QObject
 {
 public:
 	Object();
