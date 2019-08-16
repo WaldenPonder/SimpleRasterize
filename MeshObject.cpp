@@ -25,7 +25,7 @@ struct MeshObject::Impl
 
 	struct ShaderInfo
 	{
-		int x, y;
+		int  x, y;
 		Vec3 normal;
 		Vec3 cameraSpacePos;
 	} shader;
@@ -36,7 +36,7 @@ struct MeshObject::Impl
 Mesh::Mesh(const string& filename) : impl(new Impl)
 {
 	impl->filename = filename;
-	load();	
+	load();
 }
 
 Mesh::~Mesh()
@@ -60,7 +60,6 @@ void Mesh::load()
 
 MeshObject::MeshObject(const Mesh& mesh) : impl(new Impl(mesh))
 {
-
 }
 
 MeshObject::~MeshObject()
@@ -70,8 +69,8 @@ MeshObject::~MeshObject()
 void MeshObject::vert_shader(Vec4& v) const
 {
 	//qDebug() << "AA\t" << VEC4(v);
-	Vec4 pos  = v * matrix_ * g::context.viewMatrix_;
-	v = pos * g::context.projectionMatrix_;
+	Vec4 pos					= v * matrix_ * g::context.viewMatrix_;
+	v							= pos * g::context.projectionMatrix_;
 	impl->shader.cameraSpacePos = Vec3(pos.x(), pos.y(), pos.z());
 }
 
@@ -81,10 +80,12 @@ void MeshObject::frag_shader() const
 	Matrix trans;
 	trans.transpose(mat);
 
-	Impl::ShaderInfo& info = impl->shader;
-	Vec3 normal = info.normal * trans;
+	Impl::ShaderInfo& info   = impl->shader;
+	Vec3			  normal = info.normal * trans;
+	normal.normalize();
+
 	Vec3& color = g::context.colorBuffer_[info.y][info.x];
-	color = Vec3(.1);
+	color		= Vec3(.1);
 
 	Vec3 viewDir = info.cameraSpacePos;
 	viewDir.normalize();
@@ -92,11 +93,11 @@ void MeshObject::frag_shader() const
 	lightDir.normalize(), lightDir *= -1;
 
 	const Vec3 COLOR = g::White;
-	float NDotL = normal * lightDir;
+	float	  NDotL = normal * lightDir;
 	color += COLOR * NDotL;
 
-	Vec3 reflectDir = -lightDir + 2 * normal * NDotL;
-	float f = reflectDir * viewDir;
+	Vec3  reflectDir = -lightDir + 2 * normal * NDotL;
+	float f			 = reflectDir * viewDir;
 
 	if (f > 0)
 	{
@@ -111,7 +112,8 @@ void MeshObject::transform2screen(Vec4& v) const
 	//qDebug() << "CC\t" << VEC4(v);
 	v.x() = (v.x() + 1) * .5 * g::context.width_;
 	v.y() = (v.y() + 1) * .5 * g::context.height_;
-	//v.z() = 1. / v.z();
+	v.z() = 1 - v.z();
+	v.z() = 1 / v.z();
 }
 
 //https://blog.csdn.net/xiaobaitu389/article/details/75523018
@@ -168,10 +170,10 @@ void MeshObject::draw()
 						float oneOverZ = p1.z() * w0 + p2.z() * w1 + p3.z() * w2;
 
 						//qDebug() << "\t\t" << oneOverZ;
-						float z = oneOverZ;
+						float z = 1 / oneOverZ;
 						//qDebug() << z;
 
-						if (z > g::context.depthBuffer_[y][x])
+						if (z < g::context.depthBuffer_[y][x])
 						{
 							g::context.colorBuffer_[y][x] = g::White;
 							g::context.depthBuffer_[y][x] = z;
@@ -180,13 +182,16 @@ void MeshObject::draw()
 							if (normals.size())
 							{
 								in = 3 * index[i].normal_index;
-								n1 = Vec3(normals[in], normals[in + 1], normals[in + 2]);  n1 /= p1.z();
+								n1 = Vec3(normals[in], normals[in + 1], normals[in + 2]);
+								n1 /= p1.z();
 								in = index[i + 1].normal_index;
-								n2 = Vec3(normals[in], normals[in + 1], normals[in + 2]);  n2 /= p3.z();
+								n2 = Vec3(normals[in], normals[in + 1], normals[in + 2]);
+								n2 /= p3.z();
 								in = index[i + 2].normal_index;
-								n3 = Vec3(normals[in], normals[in + 1], normals[in + 2]);  n3 /= p3.z();
+								n3 = Vec3(normals[in], normals[in + 1], normals[in + 2]);
+								n3 /= p3.z();
 
-								impl->shader.normal = n1 * w0 + n2 * w1 + n3 * w2;	
+								impl->shader.normal = n1 * w0 + n2 * w1 + n3 * w2;
 								impl->shader.normal *= z;
 
 								this->frag_shader();
@@ -195,8 +200,6 @@ void MeshObject::draw()
 					}
 				}
 			}
-
-
 		}
 	}
 }

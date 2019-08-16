@@ -9,6 +9,7 @@ namespace g
 	Context context;
 }
 
+//Œ∆¿Ì  ∑®œﬂ
 int main(int argc, char* argv[])
 {
 	//-------------------------scene------------------------

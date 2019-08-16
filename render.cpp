@@ -44,7 +44,7 @@ void Render::paintEvent(QPaintEvent*)
 		for (int y = 0; y < height(); ++y)
 		{
 			g::context.colorBuffer_[y][x] = g::context.clearColor_;
-			g::context.depthBuffer_[y][x] = -FLT_MAX;
+			g::context.depthBuffer_[y][x] = FLT_MAX;
 		}
 	}
 
