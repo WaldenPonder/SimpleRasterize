@@ -31,7 +31,6 @@ class MeshObject : public Object, public InstancePool<MeshObject>
  private:
 	 inline void vert_shader(Vec4& v) const;
 	 inline void frag_shader() const;
-	 inline void transform2screen(Vec4& v) const;
 
 	struct Impl;
 	Impl* impl;

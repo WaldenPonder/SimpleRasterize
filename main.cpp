@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
 	
 	Mesh	   teapot(g::getResDir() + "teapot.obj");
 	MeshObject mo2(teapot);
-	mo2.matrix_ = Matrix::rotate(PI / 2, X_AXIS) * Matrix::rotate(-PI / 2, Z_AXIS) * Matrix::translate(-.5, -.5, -5);
+	mo2.matrix_ = Matrix::rotate(PI / 2, X_AXIS) * Matrix::rotate(-PI / 2, Z_AXIS) * Matrix::translate(-.4, -.4, -3);
 
 	//Mesh Buddha(g::getResDir() + "Buddha.obj");
 	//MeshObject mo3(Buddha);

@@ -68,32 +68,73 @@ MeshObject::~MeshObject()
 
 void MeshObject::vert_shader(Vec4& v) const
 {
+#if 1
 	//qDebug() << "AA\t" << VEC4(v);
-	Vec4 pos					= v * matrix_ * g::context.viewMatrix_;
-	v							= pos * g::context.projectionMatrix_;
+	Vec4 cameraPos				= v * matrix_ * g::context.viewMatrix_;
+	v							= cameraPos;
+	impl->shader.cameraSpacePos = Vec3(cameraPos.x(), cameraPos.y(), cameraPos.z());
+
+	// calculate the appropriate left, right etc.
+	float tan_fovy	= tan(g::DegreesToRadians(60 * 0.5));
+	float aspectRatio = g::context.width_ / g::context.height_;
+	float n			  = .1;
+	float f			  = 10000;
+	float r			  = tan_fovy * aspectRatio * n;
+	float l			  = -r;
+	float t			  = tan_fovy * n;
+	float b			  = -t;
+
+	//screen space
+	Vec2 screenPos;
+	screenPos.x() = n * cameraPos.x() / -cameraPos.z();
+	screenPos.y() = n * cameraPos.y() / -cameraPos.z();
+
+	//screen pos to ndc
+	Vec2 ndc;
+	ndc.x() = 2 * screenPos.x() / (r - l) - (r + l) / (r - l);
+	ndc.y() = 2 * screenPos.y() / (t - b) - (t + b) / (t - b);
+
+	//raster space
+	v.x() = (ndc.x() + 1) * .5 * g::context.width_;
+	v.y() = (1 - ndc.y()) * .5 * g::context.height_;
+	v.z() = -cameraPos.z();
+
+	v.z() = 1 / v.z();
+	//qDebug() << VEC4(v);
+#else
+	//qDebug() << "AA\t" << VEC4(v);
+	Vec4 pos = v * matrix_ * g::context.viewMatrix_;
+	v = pos * g::context.projectionMatrix_;
 	impl->shader.cameraSpacePos = Vec3(pos.x(), pos.y(), pos.z());
+
+	//qDebug() << "BB\t" << VEC4(v);
+	v /= v.w();
+	//qDebug() << "CC\t" << VEC4(v);
+	v.x() = (v.x() + 1) * .5 * g::context.width_;
+	v.y() = (v.y() + 1) * .5 * g::context.height_;
+	v.z() = -pos.z();
+	v.z() = 1 / v.z();
+	//v.z() = 1 - v.z();
+	//v.z() = 1 / v.z();
+#endif
 }
 
 void MeshObject::frag_shader() const
 {
-	Matrix mat = Matrix::inverse(matrix_ * g::context.viewMatrix_);
-	Matrix trans;
-	trans.transpose(mat);
-
 	Impl::ShaderInfo& info   = impl->shader;
-	Vec3			  normal = info.normal * trans;
+	Vec3			  normal = info.normal;
 	normal.normalize();
 
 	Vec3& color = g::context.colorBuffer_[info.y][info.x];
-	color		= Vec3(.1);
+	color		= Vec3(.0);
 
 	Vec3 viewDir = info.cameraSpacePos;
 	viewDir.normalize();
 	Vec3 lightDir(1, 1, 1);
 	lightDir.normalize(), lightDir *= -1;
 
-	const Vec3 COLOR = g::White;
-	float	  NDotL = normal * lightDir;
+	const Vec3 COLOR = g::White * .7;
+	float	  NDotL = std::abs(lightDir * normal);
 	color += COLOR * NDotL;
 
 	Vec3  reflectDir = -lightDir + 2 * normal * NDotL;
@@ -101,19 +142,10 @@ void MeshObject::frag_shader() const
 
 	if (f > 0)
 	{
-		color += std::pow(f, 5) * COLOR;
+	  // color += std::pow(f, 5) * COLOR;
 	}
-}
 
-void MeshObject::transform2screen(Vec4& v) const
-{
-	//qDebug() << "BB\t" << VEC4(v);
-	v /= v.w();
-	//qDebug() << "CC\t" << VEC4(v);
-	v.x() = (v.x() + 1) * .5 * g::context.width_;
-	v.y() = (v.y() + 1) * .5 * g::context.height_;
-	v.z() = 1 - v.z();
-	v.z() = 1 / v.z();
+	color.max_to_one();
 }
 
 //https://blog.csdn.net/xiaobaitu389/article/details/75523018
@@ -142,7 +174,6 @@ void MeshObject::draw()
 			Vec4 p3(vertices[in], vertices[in + 1], vertices[in + 2], 1);
 
 			vert_shader(p1), vert_shader(p2), vert_shader(p3);
-			transform2screen(p1), transform2screen(p2), transform2screen(p3);
 
 			int minx = std::min({ p1.x(), p2.x(), p3.x() });
 			int maxx = std::max({ p1.x(), p2.x(), p3.x() });
@@ -183,17 +214,25 @@ void MeshObject::draw()
 							{
 								in = 3 * index[i].normal_index;
 								n1 = Vec3(normals[in], normals[in + 1], normals[in + 2]);
-								n1 /= p1.z();
-								in = index[i + 1].normal_index;
+								
+								in = 3 * index[i + 1].normal_index;
 								n2 = Vec3(normals[in], normals[in + 1], normals[in + 2]);
-								n2 /= p3.z();
-								in = index[i + 2].normal_index;
+								
+								in = 3 * index[i + 2].normal_index;
 								n3 = Vec3(normals[in], normals[in + 1], normals[in + 2]);
-								n3 /= p3.z();
+								
+								//ÄæµÄ×ªÖÃ
+								Matrix mat = Matrix::inverse(matrix_ * g::context.viewMatrix_);
+								Matrix trans;
+								trans.transpose(mat);
+								n1 = n1 * trans;
+								n2 = n2 * trans;
+								n3 = n3 * trans;
 
-								impl->shader.normal = n1 * w0 + n2 * w1 + n3 * w2;
+								n1 /= p1.z(); n2 /= p2.z(); n3 /= p3.z();
+								impl->shader.normal = n1 *w0 + n2 * w1 + n3 * w2;
 								impl->shader.normal *= z;
-
+								
 								this->frag_shader();
 							}
 						}

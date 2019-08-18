@@ -78,6 +78,12 @@ class Vec3
 
         inline int to_color() const { return (0xffu << 24) | (((int)_v[0] & 0xffu) << 16) | (((int)_v[1] & 0xffu) << 8) | ((int)_v[2] & 0xffu); }
 
+		inline void max_to_one()
+		{
+			float max_v = std::max({ _v[0], _v[1], _v[2] });
+			if (max_v > 1) 	_v[0] /= max_v, _v[1] /= max_v, _v[2] /= max_v;
+		}
+
         inline value_type& operator [] (int i) { return _v[i]; }
         inline value_type operator [] (int i) const { return _v[i]; }
 
