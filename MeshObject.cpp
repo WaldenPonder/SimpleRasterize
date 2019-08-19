@@ -68,11 +68,12 @@ MeshObject::~MeshObject()
 
 void MeshObject::vert_shader(Vec4& v) const
 {
-#if 1
-	//qDebug() << "AA\t" << VEC4(v);
-	Vec4 cameraPos				= v * matrix_ * g::context.viewMatrix_;
-	v							= cameraPos;
+	Vec4 cameraPos = v * matrix_ * g::context.viewMatrix_;
+	
 	impl->shader.cameraSpacePos = Vec3(cameraPos.x(), cameraPos.y(), cameraPos.z());
+
+#if 0
+	v = cameraPos;
 
 	// calculate the appropriate left, right etc.
 	float tan_fovy	= tan(g::DegreesToRadians(60 * 0.5));
@@ -97,25 +98,17 @@ void MeshObject::vert_shader(Vec4& v) const
 	//raster space
 	v.x() = (ndc.x() + 1) * .5 * g::context.width_;
 	v.y() = (1 - ndc.y()) * .5 * g::context.height_;
-	v.z() = -cameraPos.z();
+	v.z() = -1 / cameraPos.z();
 
-	v.z() = 1 / v.z();
-	//qDebug() << VEC4(v);
 #else
-	//qDebug() << "AA\t" << VEC4(v);
-	Vec4 pos = v * matrix_ * g::context.viewMatrix_;
-	v = pos * g::context.projectionMatrix_;
-	impl->shader.cameraSpacePos = Vec3(pos.x(), pos.y(), pos.z());
+		v = cameraPos * g::context.projectionMatrix_;
 
-	//qDebug() << "BB\t" << VEC4(v);
-	v /= v.w();
-	//qDebug() << "CC\t" << VEC4(v);
-	v.x() = (v.x() + 1) * .5 * g::context.width_;
-	v.y() = (v.y() + 1) * .5 * g::context.height_;
-	v.z() = -pos.z();
-	v.z() = 1 / v.z();
-	//v.z() = 1 - v.z();
-	//v.z() = 1 / v.z();
+		v /= v.w();
+
+		v.x() = (v.x() + 1) * .5 * g::context.width_;
+		v.y() = (1 - v.y()) * .5 * g::context.height_;
+		v.z() = -cameraPos.z();
+		v.z() = 1 / v.z();
 #endif
 }
 
