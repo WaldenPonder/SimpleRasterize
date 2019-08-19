@@ -77,7 +77,7 @@ void MeshObject::vert_shader(Vec4& v) const
 	
 	impl->shader.cameraSpacePos = Vec3(cameraPos.x(), cameraPos.y(), cameraPos.z());
 
-#if 1
+#if 0
 	v = cameraPos;
 
 	// calculate the appropriate left, right etc.
