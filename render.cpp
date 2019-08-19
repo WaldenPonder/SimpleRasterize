@@ -59,7 +59,6 @@ void Render::paintEvent(QPaintEvent*)
 	{
 		for (int y = 0; y < height(); ++y)
 		{
-
 			Vec3 c					 = g::context.colorBuffer_[y][x] * 255;
 			pixels[x * height() + y] = c.to_color();
 		}

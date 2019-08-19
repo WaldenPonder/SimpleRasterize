@@ -9,6 +9,11 @@ float edgeFunction(const Vec4& a, const Vec4& b, const Vec4& c)
 	return (c[0] - a[0]) * (b[1] - a[1]) - (c[1] - a[1]) * (b[0] - a[0]);
 }
 
+namespace g {
+	Vec3Array colors{ Red, Green, Blue, Yellow, Brown, Cyan, SpicyPink, BlueViolet };
+}
+
+
 struct Mesh::Impl
 {
 	tinyobj::attrib_t				 attrib;
@@ -72,7 +77,7 @@ void MeshObject::vert_shader(Vec4& v) const
 	
 	impl->shader.cameraSpacePos = Vec3(cameraPos.x(), cameraPos.y(), cameraPos.z());
 
-#if 0
+#if 1
 	v = cameraPos;
 
 	// calculate the appropriate left, right etc.
@@ -142,13 +147,17 @@ void MeshObject::frag_shader() const
 }
 
 //https://blog.csdn.net/xiaobaitu389/article/details/75523018
-
 void MeshObject::draw()
 {
-	matrix_ = Matrix::rotate(.03, Z_AXIS) * matrix_;
-
+	matrix_ = Matrix::rotate(.03, X_AXIS) * matrix_;
+	
 	float		t, u, v;
 	const Mesh& mesh = impl->mesh_;
+
+	auto get_color = [](Vec4 p) {
+		int colorIndex = std::pow(2, 2) * p.x() + std::pow(2, 1) * p.y() + std::pow(2, 0) * p.z();
+		return g::colors[colorIndex % 8];
+	};
 
 	for (tinyobj::shape_t& shape : impl->mesh_.impl->shapes)
 	{
@@ -165,9 +174,10 @@ void MeshObject::draw()
 			Vec4 p2(vertices[in], vertices[in + 1], vertices[in + 2], 1);
 			in = 3 * index[i + 2].vertex_index;
 			Vec4 p3(vertices[in], vertices[in + 1], vertices[in + 2], 1);
-
+			
+			Vec4 modelP1 = p1, modelP2 = p2, modelP3 = p3;
 			vert_shader(p1), vert_shader(p2), vert_shader(p3);
-
+					   
 			int minx = std::min({ p1.x(), p2.x(), p3.x() });
 			int maxx = std::max({ p1.x(), p2.x(), p3.x() });
 			int miny = std::min({ p1.y(), p2.y(), p3.y() });
@@ -178,6 +188,9 @@ void MeshObject::draw()
 			{
 				for (int y = miny; y <= maxy; y++)
 				{
+					if(x < 0 || x >= g::context.width_ || y < 0 || y >= g::context.height_)
+						continue;
+
 					impl->shader.x = x, impl->shader.y = y;
 
 					Vec4 pixelSample(x + .5, y + .5, 0, 0);
@@ -188,14 +201,10 @@ void MeshObject::draw()
 
 					if (w0 >= 0 && w1 >= 0 && w2 >= 0)
 					{
-						w0 /= area;
-						w1 /= area;
-						w2 /= area;
+						w0 /= area, w1 /= area, w2 /= area;
+						
 						float oneOverZ = p1.z() * w0 + p2.z() * w1 + p3.z() * w2;
-
-						//qDebug() << "\t\t" << oneOverZ;
 						float z = 1 / oneOverZ;
-						//qDebug() << z;
 
 						if (z < g::context.depthBuffer_[y][x])
 						{
@@ -222,11 +231,24 @@ void MeshObject::draw()
 								n2 = n2 * trans;
 								n3 = n3 * trans;
 
-								n1 /= p1.z(); n2 /= p2.z(); n3 /= p3.z();
+								n1 *= p1.z(); n2 *= p2.z(); n3 *= p3.z();
 								impl->shader.normal = n1 *w0 + n2 * w1 + n3 * w2;
 								impl->shader.normal *= z;
 								
 								this->frag_shader();
+							}
+							else
+							{
+								Vec3 color1 = get_color(modelP1);
+								Vec3 color2 = get_color(modelP2);
+								Vec3 color3 = get_color(modelP3);
+
+								color1 *= p1.z(); color2 *= p2.z(); color3 *= p3.z();
+					
+								Impl::ShaderInfo& info = impl->shader;
+								Vec3& color = g::context.colorBuffer_[info.y][info.x];
+								color = color1 * w0 + color2 * w1 + color3 * w2;
+								color *= z;
 							}
 						}
 					}

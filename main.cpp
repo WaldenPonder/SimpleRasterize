@@ -9,17 +9,17 @@ namespace g
 	Context context;
 }
 
-//纹理  法线
+//纹理
 int main(int argc, char* argv[])
 {
 	//-------------------------scene------------------------
-	//Mesh cube(g::getResDir() + "cube.obj");
-	//MeshObject mo(cube);
-	//mo.matrix_ = Matrix::translate(-.5, -.5, -5);
+	Mesh cube(g::getResDir() + "cube.obj");
+	MeshObject mo(cube);
+	mo.matrix_ = Matrix::scale(15) * Matrix::translate(-.5, -.5, -50);
 	
-	Mesh	   teapot(g::getResDir() + "teapot.obj");
-	MeshObject mo2(teapot);
-	mo2.matrix_ = Matrix::rotate(PI / 2, X_AXIS) * Matrix::rotate(-PI / 2, Z_AXIS) * Matrix::translate(-.4, -.4, -3);
+	//Mesh	   teapot(g::getResDir() + "teapot.obj");
+	//MeshObject mo2(teapot);
+	//mo2.matrix_ = Matrix::rotate(PI / 2, X_AXIS) * Matrix::rotate(-PI / 2, Z_AXIS) * Matrix::translate(-.4, -.4, -3);
 
 	//Mesh Buddha(g::getResDir() + "Buddha.obj");
 	//MeshObject mo3(Buddha);

@@ -193,9 +193,9 @@ vector<T*>& operator <<(vector<T*>& v, nullptr_t i)
 //	return stm;
 //}
 
-#define VEC2(v)  v[0] << ", " << v[1]
-#define VEC3(v)  v[0] << ", " << v[1] << ", " << v[2]
-#define VEC4(v)  v[0] << ", " << v[1] << ", " << v[2] << ", " << v[3]
+#define T_VEC2(v)  v[0] << ", " << v[1]
+#define T_VEC3(v)  v[0] << ", " << v[1] << ", " << v[2]
+#define T_VEC4(v)  v[0] << ", " << v[1] << ", " << v[2] << ", " << v[3]
 
 template<typename T>
 class InstancePool
