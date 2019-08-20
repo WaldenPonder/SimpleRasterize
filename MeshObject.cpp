@@ -149,7 +149,7 @@ void MeshObject::frag_shader() const
 //https://blog.csdn.net/xiaobaitu389/article/details/75523018
 void MeshObject::draw()
 {
-	matrix_ = Matrix::rotate(.03, X_AXIS) * matrix_;
+	matrix_ = Matrix::rotate(.03, Z_AXIS) * matrix_;
 	
 	float		t, u, v;
 	const Mesh& mesh = impl->mesh_;
@@ -184,6 +184,8 @@ void MeshObject::draw()
 			int maxy = std::max({ p1.y(), p2.y(), p3.y() });
 
 			float area = edgeFunction(p1, p2, p3);
+			if(area < 0.) continue;
+
 			for (int x = minx; x <= maxx; x++)
 			{
 				for (int y = miny; y <= maxy; y++)
