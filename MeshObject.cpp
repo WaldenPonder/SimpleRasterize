@@ -71,9 +71,10 @@ MeshObject::~MeshObject()
 {
 }
 
+//http://www.songho.ca/opengl/gl_projectionmatrix.html
 void MeshObject::vert_shader(Vec4& v) const
 {
-	Vec4 cameraPos = v * matrix_ * g::context.viewMatrix_;
+	Vec4 cameraPos = v* matrix_ * g::context.viewMatrix_;
 	
 	impl->shader.cameraSpacePos = Vec3(cameraPos.x(), cameraPos.y(), cameraPos.z());
 
@@ -107,13 +108,12 @@ void MeshObject::vert_shader(Vec4& v) const
 
 #else
 		v = cameraPos * g::context.projectionMatrix_;
-
 		v /= v.w();
 
 		v.x() = (v.x() + 1) * .5 * g::context.width_;
 		v.y() = (1 - v.y()) * .5 * g::context.height_;
-		v.z() = -cameraPos.z();
-		v.z() = 1 / v.z();
+		v.z() = 1 / -cameraPos.z();
+
 #endif
 }
 
@@ -149,7 +149,9 @@ void MeshObject::frag_shader() const
 //https://blog.csdn.net/xiaobaitu389/article/details/75523018
 void MeshObject::draw()
 {
-	matrix_ = Matrix::rotate(.03, Z_AXIS) * matrix_;
+	Vec3Array axis{ X_AXIS, Y_AXIS, Z_AXIS };
+
+	matrix_ = Matrix::rotate(.03, axis[g::rotation_axis % 3]) * matrix_;
 	
 	float		t, u, v;
 	const Mesh& mesh = impl->mesh_;
@@ -184,8 +186,6 @@ void MeshObject::draw()
 			int maxy = std::max({ p1.y(), p2.y(), p3.y() });
 
 			float area = edgeFunction(p1, p2, p3);
-			if(area < 0.) continue;
-
 			for (int x = minx; x <= maxx; x++)
 			{
 				for (int y = miny; y <= maxy; y++)

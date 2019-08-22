@@ -21,6 +21,7 @@ public:
 
 namespace g {
    extern Context context;
+   extern int rotation_axis;
 }
 
 

@@ -83,3 +83,16 @@ void Render::resizeEvent(QResizeEvent* event)
 	FloatArray f(width, FLT_MAX);
 	g::context.depthBuffer_ = vector<FloatArray>(height, f);
 }
+
+void Render::keyPressEvent(QKeyEvent *event)
+{
+	if (event->key() == Qt::Key_Space)
+	{
+		g::rotation_axis++;
+
+		for (MeshObject* mo : MeshObject::pool())
+		{
+			mo->matrix_ = mo->orgin_matrix_;
+		}			
+	}
+}

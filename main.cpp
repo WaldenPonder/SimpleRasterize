@@ -7,7 +7,10 @@
 namespace g
 {
 	Context context;
+	int rotation_axis = 0;
 }
+
+#define SCENE2    1
 
 //Œ∆¿Ì
 //≤√ºÙ
@@ -15,17 +18,27 @@ namespace g
 int main(int argc, char* argv[])
 {
 	//-------------------------scene------------------------
-	//Mesh cube(g::getResDir() + "cube.obj");
-	//MeshObject mo(cube);
-	//mo.matrix_ = Matrix::scale(15) * Matrix::translate(-.5, -.5, -50);
-	
+#if SCENE1
+
+	Mesh cube(g::getResDir() + "cube.obj");
+	MeshObject mo(cube);
+	mo.orgin_matrix_ = mo.matrix_ = Matrix::scale(15) * Matrix::translate(-.5, -.5, -50);
+
+#elif SCENE2
+
 	Mesh	   teapot(g::getResDir() + "teapot.obj");
 	MeshObject mo2(teapot);
-	mo2.matrix_ = Matrix::rotate(PI / 2, X_AXIS) * Matrix::rotate(-PI / 2, Z_AXIS) * Matrix::translate(-.4, -.4, -3);
+	mo2.orgin_matrix_ = mo2.matrix_ = Matrix::rotate(PI / 2, X_AXIS) * Matrix::rotate(-PI / 2, Z_AXIS) * Matrix::translate(-.4, -.4, -3);
 
-	//Mesh Buddha(g::getResDir() + "Buddha.obj");
-	//MeshObject mo3(Buddha);
-	//mo3.matrix_ = Matrix::rotate(PI / 2, Z_AXIS) * Matrix::translate(-.5, -.5, -3);
+#elif SCENE3
+
+	Mesh Buddha(g::getResDir() + "Buddha.obj");
+	MeshObject mo3(Buddha);
+	mo3.orgin_matrix_ = mo3.matrix_ = Matrix::rotate(PI / 2, Z_AXIS) * Matrix::translate(-.5, -.5, -3);
+#endif
+	
+
+
 
 	QApplication a(argc, argv);
 

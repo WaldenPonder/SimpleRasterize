@@ -27,6 +27,7 @@ class MeshObject : public Object, public InstancePool<MeshObject>
     void draw();
 
 	Matrix matrix_;
+	Matrix orgin_matrix_;
 
  private:
 	 inline void vert_shader(Vec4& v) const;
