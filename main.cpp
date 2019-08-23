@@ -12,7 +12,7 @@ namespace g
 	QImage image;
 }  // namespace g
 
-#define SCENE1                        1
+#define SCENE2                        1
 
 //纹理
 //支持任意比例窗口
