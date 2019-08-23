@@ -32,6 +32,7 @@ struct MeshObject::Impl
 	{
 		int  x, y;
 		Vec3 normal;
+		Vec2 coord = Vec2(FLT_MAX);
 		Vec3 cameraSpacePos;
 	} shader;
 
@@ -107,7 +108,6 @@ void MeshObject::vert_shader(Vec4& v, bool& bOutCVV) const
 	v.x() = (ndc.x() + 1) * .5 * g::context.width_;
 	v.y() = (1 - ndc.y()) * .5 * g::context.height_;
 	v.z() = -1 / cameraPos.z();
-
 #else
 	v		= cameraPos * g::context.projectionMatrix_;
 	float w = v.w();
@@ -116,8 +116,7 @@ void MeshObject::vert_shader(Vec4& v, bool& bOutCVV) const
 		bOutCVV = true;
 	}
 
-	//	qDebug() << T_VEC4(v);
-
+	//qDebug() << T_VEC4(v);
 	v /= v.w();
 
 	v.x() = (v.x() + 1) * .5 * g::context.width_;
@@ -132,8 +131,8 @@ void MeshObject::frag_shader() const
 	Vec3			  normal = info.normal;
 	normal.normalize();
 
-	Vec3& color = g::context.colorBuffer_[info.y][info.x];
-	color		= Vec3(.0);
+	Vec3& gl_color = g::context.colorBuffer_[info.y][info.x];
+	gl_color	   = Vec3(.0);
 
 	Vec3 viewDir = info.cameraSpacePos;
 	viewDir.normalize();
@@ -142,17 +141,17 @@ void MeshObject::frag_shader() const
 
 	const Vec3 COLOR = g::White * .7;
 	float	  NDotL = std::abs(lightDir * normal);
-	color += COLOR * NDotL;
+	gl_color += COLOR * NDotL;
 
-	Vec3  reflectDir = -lightDir + 2 * normal * NDotL;
-	float f			 = reflectDir * viewDir;
+	//Vec3  reflectDir = -lightDir + 2 * normal * NDotL;
+	//float f			 = reflectDir * viewDir;
 
-	if (f > 0)
-	{
-		// color += std::pow(f, 5) * COLOR;
-	}
+	//if (f > 0)
+	//{
+	//	// color += std::pow(f, 5) * COLOR;
+	//}
 
-	color.max_to_one();
+	gl_color.max_to_one();
 }
 
 //https://blog.csdn.net/puppet_master/article/details/80317178
@@ -161,7 +160,7 @@ void MeshObject::draw()
 {
 	Vec3Array axis{ X_AXIS, Y_AXIS, Z_AXIS };
 
-	matrix_ = Matrix::rotate(.03, axis[g::rotation_axis % 3]) * matrix_;
+	if (g::enable_rotation) matrix_ = Matrix::rotate(.03, axis[g::rotation_axis % 3]) * matrix_;
 
 	float		t, u, v;
 	const Mesh& mesh = impl->mesh_;
@@ -173,9 +172,10 @@ void MeshObject::draw()
 
 	for (tinyobj::shape_t& shape : impl->mesh_.impl->shapes)
 	{
-		std::vector<tinyobj::index_t>& index	= shape.mesh.indices;
-		std::vector<tinyobj::real_t>&  vertices = mesh.impl->attrib.vertices;
-		std::vector<tinyobj::real_t>&  normals  = mesh.impl->attrib.normals;
+		std::vector<tinyobj::index_t>& index	 = shape.mesh.indices;
+		std::vector<tinyobj::real_t>&  vertices  = mesh.impl->attrib.vertices;
+		std::vector<tinyobj::real_t>&  normals   = mesh.impl->attrib.normals;
+		std::vector<tinyobj::real_t>&  texcoords = mesh.impl->attrib.texcoords;
 
 		for (int i = 0; i < index.size(); i += 3)
 		{
@@ -192,14 +192,14 @@ void MeshObject::draw()
 			vert_shader(p1, bOutCVV1), vert_shader(p2, bOutCVV2), vert_shader(p3, bOutCVV3);
 
 			if (bOutCVV1 && bOutCVV2 && bOutCVV3) continue;
-	
+
 			int minx = std::min({ p1.x(), p2.x(), p3.x() });
 			int maxx = std::max({ p1.x(), p2.x(), p3.x() });
 			int miny = std::min({ p1.y(), p2.y(), p3.y() });
 			int maxy = std::max({ p1.y(), p2.y(), p3.y() });
 
 			float area = edgeFunction(p1, p2, p3);
-			if (area < 0) continue; // || minx < -1000 || miny < -1000 || maxx > g::context.width_ || maxy > g::context.height_) continue;
+			if (area < 0) continue;  // || minx < -1000 || miny < -1000 || maxx > g::context.width_ || maxy > g::context.height_) continue;
 
 			for (int x = minx; x <= maxx; x++)
 			{
@@ -209,6 +209,8 @@ void MeshObject::draw()
 						continue;
 
 					impl->shader.x = x, impl->shader.y = y;
+					Impl::ShaderInfo& info	 = impl->shader;
+					Vec3&			  gl_color = g::context.colorBuffer_[info.y][info.x];
 
 					Vec4 pixelSample(x + .5, y + .5, 0, 0);
 
@@ -222,16 +224,41 @@ void MeshObject::draw()
 
 						float oneOverZ = p1.z() * w0 + p2.z() * w1 + p3.z() * w2;
 						float z		   = 1 / oneOverZ;
-					//	qDebug() << "\t\t\t oneOverZ" << oneOverZ;
+						//	qDebug() << "\t\t\t oneOverZ" << oneOverZ;
 
 						if (z < g::context.depthBuffer_[y][x])
 						{
 							g::context.colorBuffer_[y][x] = g::White;
 							g::context.depthBuffer_[y][x] = z;
 
-							Vec3 n1, n2, n3;
-							if (normals.size())
+							if (texcoords.size())  //--------------------texcoords-----------------------------
 							{
+								Vec2 coord1, coord2, coord3;
+								in	 = 2 * index[i].texcoord_index;
+								coord1 = Vec2(texcoords[in], texcoords[in + 1]);
+
+								in	 = 2 * index[i + 1].texcoord_index;
+								coord2 = Vec2(texcoords[in], texcoords[in + 1]);
+
+								in	 = 2 * index[i + 2].texcoord_index;
+								coord3 = Vec2(texcoords[in], texcoords[in + 1]);
+								coord1 *= p1.z();
+								coord2 *= p2.z();
+								coord3 *= p3.z();
+								impl->shader.coord = coord1 * w0 + coord2 * w1 + coord3 * w2;
+								impl->shader.coord *= z;
+
+								int img_w = impl->shader.coord.x() * g::image.width();
+								int img_h = impl->shader.coord.y() * g::image.height();
+
+								QRgb rgb = g::image.pixel(img_w, img_h);
+
+								gl_color = Vec3(qRed(rgb) / 255., qGreen(rgb) / 255., qBlue(rgb) / 255.);
+								//qDebug() << T_VEC3(COLOR);
+							}
+							else if (normals.size())  //-----------------texcoords--------------------------------
+							{
+								Vec3 n1, n2, n3;
 								in = 3 * index[i].normal_index;
 								n1 = Vec3(normals[in], normals[in + 1], normals[in + 2]);
 
@@ -257,7 +284,7 @@ void MeshObject::draw()
 
 								this->frag_shader();
 							}
-							else
+							else  //------------------------color-------------------------
 							{
 								Vec3 color1 = get_color(modelP1);
 								Vec3 color2 = get_color(modelP2);
@@ -267,10 +294,8 @@ void MeshObject::draw()
 								color2 *= p2.z();
 								color3 *= p3.z();
 
-								Impl::ShaderInfo& info  = impl->shader;
-								Vec3&			  color = g::context.colorBuffer_[info.y][info.x];
-								color					= color1 * w0 + color2 * w1 + color3 * w2;
-								color *= z;
+								gl_color = color1 * w0 + color2 * w1 + color3 * w2;
+								gl_color *= z;
 							}
 						}
 					}

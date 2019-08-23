@@ -2,6 +2,7 @@
 #define CONTEXT_H
 
 #include "Object.h"
+#include <QImage>
 
 class Context : public Object
 {
@@ -22,6 +23,8 @@ public:
 namespace g {
    extern Context context;
    extern int rotation_axis;
+   extern bool enable_rotation;
+   extern QImage image;
 }
 
 
