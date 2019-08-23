@@ -30,7 +30,7 @@ class MeshObject : public Object, public InstancePool<MeshObject>
 	Matrix orgin_matrix_;
 
  private:
-	 inline void vert_shader(Vec4& v) const;
+	 inline void vert_shader(Vec4& v, bool& bOutCVV) const;
 	 inline void frag_shader() const;
 
 	struct Impl;

@@ -22,13 +22,16 @@ int main(int argc, char* argv[])
 
 	Mesh cube(g::getResDir() + "cube.obj");
 	MeshObject mo(cube);
-	mo.orgin_matrix_ = mo.matrix_ = Matrix::scale(15) * Matrix::translate(-.5, -.5, -50);
+	mo.orgin_matrix_ = mo.matrix_ = Matrix::scale(150) * Matrix::translate(-.5, -.5, -50);
 
 #elif SCENE2
 
 	Mesh	   teapot(g::getResDir() + "teapot.obj");
 	MeshObject mo2(teapot);
-	mo2.orgin_matrix_ = mo2.matrix_ = Matrix::rotate(PI / 2, X_AXIS) * Matrix::rotate(-PI / 2, Z_AXIS) * Matrix::translate(-.4, -.4, -3);
+	mo2.orgin_matrix_ = mo2.matrix_ = Matrix::scale(2) * Matrix::rotate(PI / 2, X_AXIS) * Matrix::rotate(-PI / 2, Z_AXIS) *  Matrix::translate(-.4, -.4, -3);
+
+	MeshObject mo3(teapot);
+	mo3.orgin_matrix_ = mo2.matrix_ = Matrix::scale(1) * Matrix::rotate(PI / 2, X_AXIS) * Matrix::rotate(-PI / 2, Z_AXIS) *  Matrix::translate(-.4, -2, -3);
 
 #elif SCENE3
 
