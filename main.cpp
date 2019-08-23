@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
 	mo2.orgin_matrix_ = mo2.matrix_ = Matrix::scale(2) * Matrix::rotate(PI / 2, X_AXIS) * Matrix::rotate(-PI / 2, Z_AXIS) *  Matrix::translate(-.4, -.4, -3);
 
 	MeshObject mo3(teapot);
-	mo3.orgin_matrix_ = mo2.matrix_ = Matrix::scale(1) * Matrix::rotate(PI / 2, X_AXIS) * Matrix::rotate(-PI / 2, Z_AXIS) *  Matrix::translate(-.4, -2, -3);
+	mo3.orgin_matrix_ = mo3.matrix_ = Matrix::scale(1) * Matrix::rotate(PI / 2, X_AXIS) * Matrix::rotate(-PI / 2, Z_AXIS) *  Matrix::translate(-.4, -2, -3);
 
 #elif SCENE3
 

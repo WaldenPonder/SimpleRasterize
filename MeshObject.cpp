@@ -155,6 +155,7 @@ void MeshObject::frag_shader() const
 	color.max_to_one();
 }
 
+//https://blog.csdn.net/puppet_master/article/details/80317178
 //https://blog.csdn.net/xiaobaitu389/article/details/75523018
 void MeshObject::draw()
 {
